@@ -1,4 +1,4 @@
-package org.proj3ct.transactionservive.entity;
+package org.proj3ct.transactionservive.entity.common;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -8,10 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CardData {
+public class Customer {
 
-    private String cardNumber;
-    private String expDate;
-    private String cvv;
+    private String firstName;
+    private String lastName;
+    private String country;
 
 }

@@ -1,34 +1,33 @@
-package org.proj3ct.transactionservive.entity;
+package org.proj3ct.transactionservive.dto.transaction;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.time.LocalDateTime;
+import org.proj3ct.transactionservive.entity.common.CardData;
+import org.proj3ct.transactionservive.entity.common.Customer;
 
 @Getter
 @Setter
+@ToString
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class Transaction {
+public class TransactionNewDto {
 
-    @JsonProperty("external_transaction_id")
-    private Long id;
+    @NotNull
     private String paymentMethod;
+    @NotNull
     private Integer amount;
+    @NotNull
     private String currency;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    @ToString.Exclude
-    private String cardDataJson;
+    @NotNull
     private CardData cardData;
+    @NotNull
     private String language;
+    @NotNull
     private String notificationUrl;
-    @ToString.Exclude
-    private String customerJson;
+    @NotNull
     private Customer customer;
 
 }
