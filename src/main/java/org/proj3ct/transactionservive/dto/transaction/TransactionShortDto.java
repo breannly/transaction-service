@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TransactionShortDto {
 
-    private Long externalTransactionId;
+    private UUID externalTransactionId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String status;

@@ -13,6 +13,7 @@ import org.proj3ct.transactionservive.entity.common.Customer;
 import org.proj3ct.transactionservive.entity.webhook.WebhookType;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class WebhookDto {
     private String amount;
     private String currency;
     private WebhookType type;
-    private Long transactionId;
+    private UUID transactionId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private CardDataDto cardData;

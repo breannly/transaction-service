@@ -5,6 +5,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public interface PayoutService {
 
@@ -12,6 +13,6 @@ public interface PayoutService {
 
     Flux<Payout> getAll(LocalDateTime startDate, LocalDateTime endDate);
 
-    Mono<Payout> getById(Long id);
+    Mono<Payout> getById(UUID id);
 
 }

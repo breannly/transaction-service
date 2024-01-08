@@ -4,14 +4,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.proj3ct.transactionservive.dto.common.CardDataDto;
-import org.proj3ct.transactionservive.dto.common.CustomerDto;
 import org.proj3ct.transactionservive.dto.webhook.WebhookDto;
 import org.proj3ct.transactionservive.entity.common.CardData;
-import org.proj3ct.transactionservive.entity.common.Customer;
 import org.proj3ct.transactionservive.entity.payout.Payout;
 import org.proj3ct.transactionservive.entity.transaction.Transaction;
 import org.proj3ct.transactionservive.entity.webhook.Webhook;
-import org.proj3ct.transactionservive.utils.JsonUtils;
 import org.proj3ct.transactionservive.utils.MaskUtils;
 
 @Mapper(componentModel = "spring",
@@ -26,22 +23,11 @@ public interface WebhookMapper {
     @Mapping(target = "transactionId", source = "id")
     Webhook map(Payout payout);
 
-    @Mapping(target = "cardData", source = "cardDataJson")
-    @Mapping(target = "customer", source = "customerJson")
     WebhookDto map(Webhook webhook);
 
-    default CustomerDto mapCustomer(String json) {
-        Customer customer = JsonUtils.readValue(json, Customer.class);
-        CustomerDto customerDto = new CustomerDto();
-        customerDto.setFirstName(customer.getFirstName());
-        customerDto.setLastName(customer.getLastName());
-        return customerDto;
-    }
-
-    default CardDataDto mapCardData(String json) {
-        CardData cardData = JsonUtils.readValue(json, CardData.class);
-        CardDataDto cardDataDto = new CardDataDto();
-        cardDataDto.setCardNumber(MaskUtils.maskCardNumber(cardData.getCardNumber()));
-        return cardDataDto;
+    default CardDataDto map(CardData cardData) {
+       CardDataDto cardDataDto = new CardDataDto();
+       cardDataDto.setCardNumber(MaskUtils.maskCardNumber(cardData.getCardNumber()));
+       return cardDataDto;
     }
 }

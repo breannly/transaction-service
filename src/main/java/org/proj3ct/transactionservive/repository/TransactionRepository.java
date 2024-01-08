@@ -7,10 +7,14 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Repository
-public interface TransactionRepository extends R2dbcRepository<Transaction, Long> {
+public interface TransactionRepository extends R2dbcRepository<Transaction, UUID> {
 
     @Query("SELECT * FROM transactions WHERE created_at BETWEEN :startDate AND :endDate")
     Flux<Transaction> getAllBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    @Query("SELECT * FROM transactions WHERE status = :status")
+    Flux<Transaction> getAllByStatus(String status);
 }

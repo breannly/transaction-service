@@ -12,6 +12,7 @@ import org.proj3ct.transactionservive.entity.common.CardData;
 import org.proj3ct.transactionservive.entity.common.Customer;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TransactionDto {
 
-    private Long externalTransactionId;
+    private UUID externalTransactionId;
     private String paymentMethod;
     private String amount;
     private LocalDateTime createdAt;

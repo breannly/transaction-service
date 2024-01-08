@@ -1,13 +1,19 @@
 package org.proj3ct.transactionservive.entity.transaction;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.proj3ct.transactionservive.entity.common.CardData;
 import org.proj3ct.transactionservive.entity.common.Customer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,26 +21,28 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table("transactions")
-public class Transaction {
+public class Transaction implements Persistable<UUID> {
 
     @Id
-    private Long id;
+    private UUID id;
     private String paymentMethod;
     private Integer amount;
     private String currency;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @ToString.Exclude
-    private String cardDataJson;
-    @Transient
     private CardData cardData;
     private String language;
     private String notificationUrl;
-    @ToString.Exclude
-    private String customerJson;
-    @Transient
     private Customer customer;
     private TransactionStatus status;
     private String message;
 
+    @Transient
+    private boolean isNew;
+
+    @Override
+    @Transient
+    public boolean isNew() {
+        return this.isNew || id == null;
+    }
 }

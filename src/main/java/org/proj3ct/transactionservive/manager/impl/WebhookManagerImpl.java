@@ -17,6 +17,7 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -27,42 +28,57 @@ public class WebhookManagerImpl implements WebhookManager {
     private final WebClient webClient;
 
     @Override
-    public Mono<Void> sendNotification(Transaction transaction) {
-        Webhook webhook = webhookMapper.map(transaction);
-        webhook.setType(WebhookType.TRANSACTION);
-        return sendWebhook(transaction.getNotificationUrl(), webhook);
+    public Mono<Webhook> sendWebhook(Transaction transaction) {
+        Webhook webhook = webhookMapper.map(transaction).toBuilder()
+                .isNew(true)
+                .id(UUID.randomUUID())
+                .type(WebhookType.TRANSACTION)
+                .build();
+        return processWebhook(transaction.getNotificationUrl(), webhook);
     }
 
     @Override
-    public Mono<Void> sendNotification(Payout payout) {
-        Webhook webhook = webhookMapper.map(payout);
-        webhook.setType(WebhookType.PAYOUT);
-        return sendWebhook(payout.getNotificationUrl(), webhook);
+    public Mono<Webhook> sendWebhook(Payout payout) {
+        Webhook webhook = webhookMapper.map(payout).toBuilder()
+                .isNew(true)
+                .id(UUID.randomUUID())
+                .type(WebhookType.PAYOUT)
+                .build();
+        return processWebhook(payout.getNotificationUrl(), webhook);
     }
 
-    private Mono<Void> sendWebhook(String url, Webhook webhook) {
+    private Mono<Webhook> processWebhook(String url, Webhook webhook) {
         WebhookDto webhookDto = webhookMapper.map(webhook);
         return webClient.post()
                 .uri(url)
                 .bodyValue(webhookDto)
                 .retrieve()
                 .toBodilessEntity()
-                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofMinutes(10))
                         .filter(WebClientUtils::isError)
-                        .doAfterRetry(retrySignal -> updateWebhook(webhook).subscribe())
+                        .doAfterRetry(retrySignal -> {
+                            incrementWebhook(webhook)
+                                    .subscribe(updatedWebhook ->
+                                            webhook.setCount(updatedWebhook.getCount()));
+                        })
                         .onRetryExhaustedThrow(((retryBackoffSpec, retrySignal) -> new RuntimeException(
                                 "Send webhook failed after max retries")
                         )))
-                .flatMap(response -> updateWebhook(webhook));
+                .flatMap(response -> incrementWebhook(webhook));
     }
 
-    private Mono<Void> updateWebhook(Webhook webhook) {
-        return webhookRepository.save(
-                        webhook.toBuilder()
-                                .id(null)
-                                .updatedAt(LocalDateTime.now())
-                                .build()
-                )
-                .then();
+    private Mono<Webhook> incrementWebhook(Webhook webhook) {
+        if (webhook.getCount() != 0) {
+            webhook = webhook.toBuilder()
+                    .isNew(false)
+                    .build();
+        }
+
+        Webhook updatedWebhook = webhook.toBuilder()
+                .updatedAt(LocalDateTime.now())
+                .count(webhook.getCount() + 1)
+                .build();
+
+        return webhookRepository.save(updatedWebhook);
     }
 }

@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class PayoutControllerV1 {
     }
 
     @GetMapping("/{payoutId}/details")
-    public Mono<PayoutDto> getById(@PathVariable Long payoutId) {
+    public Mono<PayoutDto> getById(@PathVariable UUID payoutId) {
         return payoutService.getById(payoutId)
                 .map(payoutMapper::map);
     }
