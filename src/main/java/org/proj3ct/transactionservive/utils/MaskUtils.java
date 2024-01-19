@@ -1,6 +1,9 @@
 package org.proj3ct.transactionservive.utils;
 
-public class MaskUtils {
+public final class MaskUtils {
+
+    private MaskUtils() {
+    }
 
     public static String maskCardNumber(String cardNumber) {
         if (cardNumber == null || cardNumber.length() <= 4) {

@@ -3,12 +3,15 @@ package org.proj3ct.transactionservive.utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonUtils {
+public final class JsonUtils {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     static {
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+    }
+
+    private JsonUtils() {
     }
 
     public static String writeValueAsString(Object object) {
@@ -25,8 +28,5 @@ public class JsonUtils {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private JsonUtils() {
     }
 }

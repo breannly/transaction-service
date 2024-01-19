@@ -8,9 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.proj3ct.transactionservive.dto.common.CardDataDto;
 import org.proj3ct.transactionservive.dto.common.CustomerDto;
-import org.proj3ct.transactionservive.entity.common.CardData;
-import org.proj3ct.transactionservive.entity.common.Customer;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -23,7 +22,8 @@ public class TransactionDto {
 
     private UUID externalTransactionId;
     private String paymentMethod;
-    private String amount;
+    private BigDecimal amount;
+    private String currency;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String notificationUrl;

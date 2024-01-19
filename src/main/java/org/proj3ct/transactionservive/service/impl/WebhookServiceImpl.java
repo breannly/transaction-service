@@ -18,28 +18,40 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class WebhookServiceImpl implements WebhookService {
 
-    private final PayoutManager payoutManager;
     private final PayoutRepository payoutRepository;
-    private final TransactionManager transactionManager;
     private final TransactionRepository transactionRepository;
+    private final PayoutManager payoutManager;
+    private final TransactionManager transactionManager;
     private final WebhookManager webhookManager;
 
     @Override
-    @Scheduled(cron = "0 */15 * * * *")
+    @Scheduled(cron = "33 */1 * * * *")
     public void processTransactions() {
-        transactionRepository.getAllByStatus(TransactionStatus.IN_PROCESS.name())
-                .map(transactionManager::manage)
-                .flatMap(transactionRepository::save)
-                .flatMap(webhookManager::sendWebhook);
+        log.info("Starting transaction processing");
+        transactionRepository.findAllByStatus(TransactionStatus.IN_PROCESS.name())
+                .flatMap(transaction -> {
+                    log.info("Processing transaction: {}", transaction.getId());
+                    return transactionManager.manage(transaction);
+                })
+                .flatMap(webhookManager::sendWebhook)
+                .doOnError(error -> log.error("Error processing payouts: {}", error.getMessage()))
+                .doOnComplete(() -> log.info("Completed transaction processing"))
+                .subscribe();
     }
 
     @Override
-    @Scheduled(cron = "0 */15 * * * *")
+    @Scheduled(cron = "27 */2 * * * *")
     public void processPayouts() {
-        payoutRepository.getAllByStatus(PayoutStatus.IN_PROGRESS.name())
-                .map(payoutManager::manage)
-                .flatMap(payoutRepository::save)
+        log.info("Starting payout processing");
+
+        payoutRepository.findAllByStatus(PayoutStatus.IN_PROGRESS.name())
+                .flatMap(payout -> {
+                    log.info("Processing payout: {}", payout.getId());
+                    return payoutManager.manage(payout);
+                })
                 .flatMap(webhookManager::sendWebhook)
+                .doOnError(error -> log.error("Error processing payouts: {}", error.getMessage()))
+                .doOnComplete(() -> log.info("Completed payout processing"))
                 .subscribe();
     }
 }

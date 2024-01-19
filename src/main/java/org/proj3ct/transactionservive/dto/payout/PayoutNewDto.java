@@ -9,6 +9,8 @@ import lombok.ToString;
 import org.proj3ct.transactionservive.entity.common.CardData;
 import org.proj3ct.transactionservive.entity.common.Customer;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @ToString
@@ -18,7 +20,7 @@ public class PayoutNewDto {
     @NotNull
     private String paymentMethod;
     @NotNull
-    private Integer amount;
+    private BigDecimal amount;
     @NotNull
     private String currency;
     @NotNull

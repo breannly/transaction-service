@@ -1,6 +1,7 @@
 package org.proj3ct.transactionservive.manager.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.proj3ct.transactionservive.dto.webhook.WebhookDto;
 import org.proj3ct.transactionservive.entity.payout.Payout;
 import org.proj3ct.transactionservive.entity.transaction.Transaction;
@@ -19,6 +20,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class WebhookManagerImpl implements WebhookManager {
@@ -54,7 +56,7 @@ public class WebhookManagerImpl implements WebhookManager {
                 .bodyValue(webhookDto)
                 .retrieve()
                 .toBodilessEntity()
-                .retryWhen(Retry.fixedDelay(3, Duration.ofMinutes(10))
+                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1))
                         .filter(WebClientUtils::isError)
                         .doAfterRetry(retrySignal -> {
                             incrementWebhook(webhook)
@@ -64,7 +66,12 @@ public class WebhookManagerImpl implements WebhookManager {
                         .onRetryExhaustedThrow(((retryBackoffSpec, retrySignal) -> new RuntimeException(
                                 "Send webhook failed after max retries")
                         )))
-                .flatMap(response -> incrementWebhook(webhook));
+                .flatMap(response -> incrementWebhook(webhook))
+                .onErrorResume(throwable -> {
+                            log.error("Error processing webhook ID {}: {}", webhook.getId(), throwable.getMessage());
+                            return Mono.empty();
+                        }
+                );
     }
 
     private Mono<Webhook> incrementWebhook(Webhook webhook) {

@@ -9,6 +9,7 @@ import lombok.ToString;
 import org.proj3ct.transactionservive.dto.common.CardDataDto;
 import org.proj3ct.transactionservive.dto.common.CustomerDto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class PayoutDto {
 
     private UUID externalTransactionId;
     private String paymentMethod;
-    private String amount;
+    private BigDecimal amount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String notificationUrl;

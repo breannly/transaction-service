@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.proj3ct.transactionservive.entity.common.CardData;
 import org.proj3ct.transactionservive.entity.common.Customer;
+import org.proj3ct.transactionservive.entity.merchant.Merchant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -25,8 +27,11 @@ public class Payout implements Persistable<UUID> {
 
     @Id
     private UUID id;
+    private Long merchantId;
+    @Transient
+    private Merchant merchant;
     private String paymentMethod;
-    private Integer amount;
+    private BigDecimal amount;
     private String currency;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
