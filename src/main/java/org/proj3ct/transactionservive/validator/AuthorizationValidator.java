@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AuthenticationValidator {
+public class AuthorizationValidator {
 
     private final MerchantRepository merchantRepository;
 

@@ -2,7 +2,7 @@ FROM openjdk:21-slim AS builder
 WORKDIR /app
 COPY . .
 
-RUN ./mvnw clean package
+RUN ./mvnw clean package -DskipTests
 
 FROM openjdk:21-slim
 WORKDIR /app

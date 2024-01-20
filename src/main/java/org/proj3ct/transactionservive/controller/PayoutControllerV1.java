@@ -8,7 +8,7 @@ import org.proj3ct.transactionservive.dto.payout.PayoutNewDto;
 import org.proj3ct.transactionservive.dto.payout.PayoutShortDto;
 import org.proj3ct.transactionservive.service.PayoutService;
 import org.proj3ct.transactionservive.utils.CredentialsUtils;
-import org.proj3ct.transactionservive.validator.AuthenticationValidator;
+import org.proj3ct.transactionservive.validator.AuthorizationValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/payments/payout")
 public class PayoutControllerV1 {
 
-    private final AuthenticationValidator authenticationValidator;
+    private final AuthorizationValidator authenticationValidator;
     private final PayoutService payoutService;
 
     @PostMapping

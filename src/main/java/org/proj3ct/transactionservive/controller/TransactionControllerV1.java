@@ -8,7 +8,7 @@ import org.proj3ct.transactionservive.dto.transaction.TransactionListDto;
 import org.proj3ct.transactionservive.dto.transaction.TransactionShortDto;
 import org.proj3ct.transactionservive.service.TransactionService;
 import org.proj3ct.transactionservive.utils.CredentialsUtils;
-import org.proj3ct.transactionservive.validator.AuthenticationValidator;
+import org.proj3ct.transactionservive.validator.AuthorizationValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +28,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/payments/transaction")
 public class TransactionControllerV1 {
 
-    private final AuthenticationValidator authenticationValidator;
+    private final AuthorizationValidator authenticationValidator;
     private final TransactionService transactionService;
 
     @PostMapping
